@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class BaseModel(Base):
+class BaseModel(Base): # es abstracta, no representa una tabla
     __abstract__ = True
 
     id: Mapped[UUID] = mapped_column(
