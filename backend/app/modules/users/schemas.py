@@ -8,6 +8,6 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True) # sesion devuelve modelo sqlalchemy, con esto le enseñamos a pydantic a extraer datos de él (solo sabe leer dict)
 
     id: UUID
-    full_name: str = Field(serialization_alias="fullName") # serialization_alias es para que cuando se mande como json, se renombre a fullName para ts
+    full_name: str = Field(serialization_alias="fullName")
     username: str
     created_at: datetime = Field(serialization_alias="createdAt")

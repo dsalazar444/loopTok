@@ -1,12 +1,9 @@
-from enum import StrEnum
-
+from enum import Enum
 from fastapi import HTTPException, status
 
-
-class ErrorCode(StrEnum):
+class ErrorCode(str, Enum):
     USERNAME_ALREADY_EXISTS = "USERNAME_ALREADY_EXISTS"
     INVALID_TOKEN = "INVALID_TOKEN"
-
 
 class AppException(HTTPException):
     def __init__(
@@ -24,7 +21,6 @@ class AppException(HTTPException):
             },
         )
 
-
 class UsernameAlreadyExistsError(AppException):
     def __init__(self) -> None:
         super().__init__(
@@ -32,7 +28,6 @@ class UsernameAlreadyExistsError(AppException):
             code=ErrorCode.USERNAME_ALREADY_EXISTS,
             message="Username already exists",
         )
-
 
 class InvalidTokenError(AppException):
     def __init__(self) -> None:
