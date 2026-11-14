@@ -7,14 +7,14 @@ from app.modules.users.models import User
 
 class UserRepository:
     def __init__(self, session: Session) -> None:
-        self.session = session
+        self.session = session # recibe y asigna sesión para conexión a bd -> self.session es el objeto de SQLAlchemy que se comunica directamente con PostgreSQL
 
     def get_by_username(self, username: str) -> User | None:
         statement = select(User).where(
             User.username == username
         )
 
-        return self.session.scalar(statement)
+        return self.session.scalar(statement) # devuelve objeto sqlalchemy si existe
 
     def create(
         self,
@@ -32,3 +32,7 @@ class UserRepository:
         self.session.add(user)
 
         return user
+        
+# Observa que create() utiliza session.add(), pero no ejecuta commit().
+# Esto es intencional: dejaremos que el servicio controle cuándo confirmar la transacción.
+# Así mantenemos separados el acceso a datos y la lógica de negocio   
