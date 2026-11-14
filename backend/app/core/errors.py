@@ -1,7 +1,7 @@
-from enum import StrEnum
+from enum import Enum
 from fastapi import HTTPException, status
 
-class ErrorCode(StrEnum):
+class ErrorCode(str, Enum):
     USERNAME_ALREADY_EXISTS = "USERNAME_ALREADY_EXISTS"
 
 class AppException(HTTPException):

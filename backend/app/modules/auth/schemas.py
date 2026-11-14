@@ -1,11 +1,13 @@
 import re
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 USERNAME_PATTERN = re.compile(r"^[a-zA-Z0-9._]+$")
 FULL_NAME_PATTERN = re.compile(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$")
 
 class RegisterRequest(BaseModel):
-    full_name: str = Field(min_length=2, max_length=100)
+    model_config = ConfigDict(populate_by_name=True)
+
+    full_name: str = Field(min_length=2, max_length=100, alias="fullName")
     username: str = Field(min_length=3, max_length=30)
     password: str = Field(min_length=8, max_length=128)
 

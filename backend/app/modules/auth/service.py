@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import UsernameAlreadyExistsError
-from app.core.security import hash_password
+from app.core.errors import UsernameAlreadyExistsError
+from app.modules.auth.security import hash_password
 from app.modules.auth.schemas import RegisterRequest
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
