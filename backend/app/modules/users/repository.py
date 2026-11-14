@@ -1,4 +1,6 @@
 # repositorio concentra las operaciones de persistencia.
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -8,6 +10,9 @@ from app.modules.users.models import User
 class UserRepository:
     def __init__(self, session: Session) -> None:
         self.session = session # recibe y asigna sesión para conexión a bd -> self.session es el objeto de SQLAlchemy que se comunica directamente con PostgreSQL
+
+    def get_by_id(self, user_id: UUID) -> User | None:
+        return self.session.get(User, user_id)
 
     def get_by_username(self, username: str) -> User | None:
         statement = select(User).where(

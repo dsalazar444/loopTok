@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
+from app.modules.users.router import router as users_router
 
 settings = get_settings()
 
@@ -14,6 +15,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["Authorization", "Content-Type"],
 )
+# routes
+app.include_router(users_router)
 
 
 @app.get("/health")
