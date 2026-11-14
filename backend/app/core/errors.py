@@ -1,11 +1,8 @@
 from enum import StrEnum
-
 from fastapi import HTTPException, status
-
 
 class ErrorCode(StrEnum):
     USERNAME_ALREADY_EXISTS = "USERNAME_ALREADY_EXISTS"
-
 
 class AppException(HTTPException):
     def __init__(
@@ -22,7 +19,6 @@ class AppException(HTTPException):
                 "message": message,
             },
         )
-
 
 class UsernameAlreadyExistsError(AppException):
     def __init__(self) -> None:
