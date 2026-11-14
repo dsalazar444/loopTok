@@ -1,0 +1,200 @@
+.page {
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 50% 45%,
+            #161b20 0%,
+            #0b0e11 65%);
+    color: #ffffff;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    min-height: 100dvh;
+    padding: 105px 28px 48px;
+}
+
+.backLink {
+    position: absolute;
+    top: 43px;
+    left: 28px;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logo {
+    color: var(--color-primary);
+    margin-bottom: 34px;
+}
+
+.header h1 {
+    font-size: 31px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin: 0 0 10px;
+}
+
+.header p {
+    color: var(--color-muted);
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 59px;
+    padding: 0 18px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid #626a73;
+    border-radius: 15px;
+    transition: border-color 0.2s;
+}
+
+.inputWrapper:focus-within {
+    border-color: var(--color-primary);
+}
+
+.inputWrapper svg {
+    flex-shrink: 0;
+}
+
+.inputWrapper input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font: inherit;
+    font-size: 16px;
+}
+
+.inputWrapper input::placeholder {
+    color: #e0e0e0;
+    opacity: 1;
+}
+
+.visibilityButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 5px;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.visibilityButton:focus-visible,
+.backLink:focus-visible,
+.loginPrompt a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+.fieldError {
+    margin: 0 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #ff8585;
+}
+
+.serverError {
+    margin: 0;
+    padding: 12px;
+    border: 1px solid #b94b4b;
+    border-radius: 10px;
+    background: rgba(185, 75, 75, 0.12);
+    color: #ffaaaa;
+    font-size: 14px;
+}
+
+.submitButton {
+    min-height: 55px;
+    margin-top: 27px;
+    border: none;
+    border-radius: 15px;
+    background: var(--color-primary);
+    color: #071116;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.submitButton:hover:not(:disabled) {
+    background: #5ad9ff;
+}
+
+.submitButton:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.submitButton:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
+}
+
+.loginPrompt {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.loginPrompt p {
+    color: var(--color-muted);
+    font-size: 16px;
+    margin: 0 0 9px;
+}
+
+.loginPrompt a {
+    color: var(--color-primary);
+    font-size: 17px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .header h1 {
+        font-size: 27px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .inputWrapper {
+        transition: none;
+    }
+}
