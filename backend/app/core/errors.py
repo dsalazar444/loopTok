@@ -5,6 +5,7 @@ class ErrorCode(str, Enum):
     USERNAME_ALREADY_EXISTS = "USERNAME_ALREADY_EXISTS"
     INVALID_TOKEN = "INVALID_TOKEN"
     INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
+    VIDEO_NOT_FOUND = "VIDEO_NOT_FOUND"
 
 class AppException(HTTPException):
     def __init__(
@@ -44,4 +45,12 @@ class InvalidCredentialsError(AppException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             code=ErrorCode.INVALID_CREDENTIALS,
             message="Invalid username or password",
+        )
+
+class VideoNotFoundError(AppException):
+    def __init__(self, video_id: str) -> None:
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            code=ErrorCode.VIDEO_NOT_FOUND,
+            message=f"Video with id {video_id} not found",
         )

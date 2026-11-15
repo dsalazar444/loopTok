@@ -17,6 +17,16 @@ class VideoResponse(BaseModel):
     tags: list[str]
     upload_date: date | None = Field(serialization_alias="uploadDate")
     url: str 
+        
+    likes_count: int = Field(
+    default=0,
+    serialization_alias="likesCount",
+    )
+
+    is_liked: bool = Field(
+        default=False,
+        serialization_alias="isLiked",
+    )
 
 
 class VideoListResponse(BaseModel):

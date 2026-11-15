@@ -18,7 +18,10 @@ SessionLocal = sessionmaker( # constructor de sesiones, usando motor -> cada vez
     expire_on_commit=False,
 )
 
-
 def get_db_session() -> Generator[Session, None, None]:
     with SessionLocal() as session:
-        yield session
+        try:
+            yield session
+        except Exception:
+            session.rollback()
+            raise

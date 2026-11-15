@@ -1,0 +1,33 @@
+from uuid import UUID
+
+from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import BaseModel
+
+
+class Like(BaseModel):
+    __tablename__ = "likes"
+    # Imported columns:
+    # id (UUID)
+    # created_at (DateTime)
+    # modified_at (DateTime)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "video_id",
+            name="uq_likes_user_video",
+        ),
+    )
+
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    video_id: Mapped[str] = mapped_column(
+        String(20),
+        ForeignKey("videos.id", ondelete="CASCADE"),
+        nullable=False,
+    )

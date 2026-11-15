@@ -23,7 +23,26 @@ def get_current_user(
     if credentials is None:
         raise InvalidTokenError()
 
+    return _get_user_from_credentials(credentials, session)
+
+# para rutas en las que es posible consultarlas tanto si tiene JWT como si no, pero si tiene, necesitamos validarlo y obtener user
+def get_optional_user(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(bearer_scheme),
+    ],
+    session: Annotated[Session, Depends(get_db_session)],
+) -> User | None:
+    if credentials is None:
+        return None
+
+    return _get_user_from_credentials(credentials, session)
+
+def _get_user_from_credentials(
+    credentials: HTTPAuthorizationCredentials,
+    session: Session,
+) -> User:
     user_id = decode_access_token(credentials.credentials)
+
     user = UserRepository(session).get_by_id(user_id)
 
     if user is None:

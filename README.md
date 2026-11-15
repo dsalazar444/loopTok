@@ -21,3 +21,9 @@ uvicorn main:app --reload
 alembic revision --autogenerate -m "descripción de lo que cambió" 
 alembic upgrade head
 ```
+
+## conectarse a bd
+```cmd
+docker exec -it backend-postgres-1 psql -U looptok -d looptok
+```
+Para listar tablas, podemos usar \dt, y para salir \q

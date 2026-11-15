@@ -1,6 +1,7 @@
 # repositorio concentra las operaciones de persistencia.
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, InstrumentedAttribute
+from typing import Any
 
 from app.modules.videos.models import Video
 
@@ -33,3 +34,13 @@ class VideoRepository:
         ).all()
 
         return list(items), total
+
+    # return first result -> util for id
+    def get_by( 
+        self,
+        column: InstrumentedAttribute[Any],
+        value: object,
+    ) -> Video | None:
+        statement = select(Video).where(column == value)
+
+        return self.session.scalars(statement).first()
