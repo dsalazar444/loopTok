@@ -18,3 +18,27 @@ export type RegisterField = keyof RegisterRequest;
 export type RegisterErrors = Partial<
   Record<RegisterField, string>
 >;
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: "bearer";
+  expires_in: number;
+}
+
+export interface AuthUser {
+  id: string;
+  fullName: string;
+  username: string;
+  createdAt: string;
+}
+
+export interface AuthState {
+  token: string | null;
+  user: AuthUser | null;
+  expiresAt: number | null;
+}

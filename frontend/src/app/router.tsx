@@ -5,15 +5,16 @@ import {
 } from "react-router";
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
+import { LoginForm } from "../features/auth/components/LoginForm";
 import { VideoFeed } from "../features/feed/components/VideoFeed";
 import { MainLayout } from "./MainLayout";
-import { LoginPlaceholder, ProfilePlaceholder } from "./placeholders";
+import { ProfilePlaceholder } from "./placeholders";
 
 export function AppRouter() {
     return (
         <Routes>
             <Route path="/register" element={<RegisterForm />} />
-            <Route path="/login" element={<LoginPlaceholder />} />
+            <Route path="/login" element={<LoginForm />} />
 
             <Route element={<MainLayout />}>
                 <Route path="/" element={<VideoFeed />} />
@@ -27,3 +28,4 @@ export function AppRouter() {
         </Routes>
     );
 }
+
