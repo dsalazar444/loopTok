@@ -36,6 +36,7 @@ class LikeRepository:
 
         self.session.execute(stmt)
 
+    # para saber si un video especifico fue dado like por un usuario especifico
     def is_liked(self, user_id: UUID, video_id: str) -> bool:
         stmt = (
             select(Like.id)
@@ -48,6 +49,26 @@ class LikeRepository:
 
         return self.session.scalar(stmt) is not None
 
+    # obtener ids de todos los videos a los que un usuario les ha dado like -> util para que en GET /videos, se mande esta info para todos los videos mandados, de una vez
+    def get_liked_video_ids(
+        self,
+        user_id: UUID,
+        video_ids: list[str],
+    ) -> set[str]:
+        if not video_ids:
+            return set()
+
+        statement = (
+            select(Like.video_id)
+            .where(
+                Like.user_id == user_id,
+                Like.video_id.in_(video_ids),
+            )
+        )
+
+        return set(self.session.scalars(statement).all())
+
+    # obtener cuenta de cantidad de likes para un video especifico 
     def get_likes_count(self, video_id: str) -> int:
         stmt = (
             select(func.count())
@@ -56,3 +77,27 @@ class LikeRepository:
         )
 
         return self.session.scalar(stmt) or 0
+
+    # obtener cantidad de likes para una lista de videos
+    def get_likes_counts(
+        self,
+        video_ids: list[str],
+    ) -> dict[str, int]:
+        if not video_ids:
+            return {}
+
+        statement = (
+            select(
+                Like.video_id,
+                func.count(Like.id),
+            )
+            .where(Like.video_id.in_(video_ids))
+            .group_by(Like.video_id)
+        )
+
+        results = self.session.execute(statement).all()
+
+        return {
+            video_id: count for video_id, count in results
+        }
+

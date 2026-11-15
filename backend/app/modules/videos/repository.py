@@ -44,14 +44,3 @@ class VideoRepository:
         statement = select(Video).where(column == value)
 
         return self.session.scalars(statement).first()
-
-    # return a number of results -> util for category, etc.
-    def get_all_by(
-        self,
-        column: InstrumentedAttribute[Any],
-        value: object, 
-        page_size: int = 20,
-    ) -> list[Video]:
-        statement = select(Video).where(column == value)
-
-        return list(self.session.scalars(statement).limit(page_size))
