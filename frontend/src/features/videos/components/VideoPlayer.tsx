@@ -1,6 +1,6 @@
 import { getYouTubeVideoId } from '../utils/youtube';
 import { useYouTubePlayer } from '../hooks/useYouTubePlayer';
-import styles from '../styles/VideoPlayer.module.css';
+import styles from './styles/VideoPlayer.module.css';
 
 interface VideoPlayerProps {
     url: string;

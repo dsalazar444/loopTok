@@ -1,7 +1,7 @@
 """Insert real sample videos into the `videos` table for local testing.
 
 Data comes from test/raw/*.info.json (yt-dlp metadata) and the youtube-shorts
-dataset (category). The mp4 files live under test/out/videos for now.
+dataset (category). Videos play from their YouTube `url`.
 
 Run once: .venv/Scripts/python scripts/seed_videos.py
 """
@@ -10,11 +10,9 @@ from datetime import date
 from app.db.session import SessionLocal
 from app.modules.videos.models import Video
 
-# shortcut: s3_key points at the local test/out/videos path, there is no S3/MinIO yet.
-# Swap for the real bucket key (e.g. "videos/<id>.mp4") once Persona B sets up storage.
 VIDEOS = [
     Video(
-        id="6yyP-agq9c",
+        id="Dca2tzxVewQ",
         title="What happens when @gordonramsay Hugh Jackman & @VancityReynolds get two tortillas ? This.",
         description="Gordon Ramsay shorts clip.",  # info.json description was empty
         category="cooking_food",
@@ -23,7 +21,7 @@ VIDEOS = [
         creator="Gordon Ramsay",
         tags=[],
         upload_date=date(2024, 7, 29),
-        url="https://www.youtube.com/watch?v=-6yyP-agq9c",
+        url="https://www.youtube.com/watch?v=Dca2tzxVewQ",
     ),
     Video(
         id="Pw40-IoL5kY",
@@ -38,7 +36,7 @@ VIDEOS = [
         creator="TED-Ed",
         tags=[],
         upload_date=date(2023, 4, 28),
-        url="test/out/videos/Pw40-IoL5kY.mp4",
+        url="https://www.youtube.com/watch?v=Pw40-IoL5kY",
     ),
 ]
 
