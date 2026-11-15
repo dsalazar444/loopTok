@@ -37,7 +37,11 @@ export function VideoFeed() {
     }, []);
 
     if (state.status === "loading") {
-        return <p className={styles.message}>Cargando videos…</p>;
+        return (
+            <div className={styles.loading} role="status" aria-label="Cargando videos">
+                <div className={styles.spinner} />
+            </div>
+        );
     }
 
     if (state.status === "error") {
