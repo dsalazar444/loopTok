@@ -1,6 +1,7 @@
 import type { Video } from "../types";
 import { VideoPlayer } from "./VideoPlayer";
 import { LikeButton } from "../../interactions/components/LikeButton";
+import { NotInterestedMenu } from "../../interactions/components/NotInterestedMenu";
 
 import styles from "./styles/VideoCard.module.css";
 
@@ -9,6 +10,7 @@ interface VideoCardProps {
     isActive: boolean;
     onLike: () => void;
     isLikePending: boolean;
+    onNotInterested: () => void;
 }
 
 export function VideoCard({
@@ -16,6 +18,7 @@ export function VideoCard({
     isActive,
     onLike,
     isLikePending,
+    onNotInterested,
 }: VideoCardProps) {
     return (
         <article className={styles.card}>
@@ -33,6 +36,8 @@ export function VideoCard({
                         isPending={isLikePending}
                         onClick={onLike}
                     />
+
+                    <NotInterestedMenu onSelect={onNotInterested} />
                 </div>
 
                 <div className={styles.overlay}>

@@ -35,3 +35,19 @@
     text-align: center;
     color: var(--color-muted);
 }
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 88px;
+    transform: translateX(-50%);
+    z-index: 10;
+    margin: 0;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(20, 26, 33, 0.95);
+    color: #ffffff;
+    font-size: 14px;
+    white-space: nowrap;
+}

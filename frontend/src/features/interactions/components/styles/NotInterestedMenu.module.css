@@ -1,0 +1,62 @@
+.wrapper {
+    position: relative;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.trigger:hover,
+.open {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.trigger:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 4;
+    margin-top: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(20, 26, 33, 0.95);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 15px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}

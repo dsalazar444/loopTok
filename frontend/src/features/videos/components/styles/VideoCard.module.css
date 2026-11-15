@@ -49,7 +49,7 @@
 .actions {
     position: absolute;
     right: 12px;
-    bottom: 140px;
+    bottom: 200px;
     z-index: 3;
 
     display: flex;
