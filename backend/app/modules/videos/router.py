@@ -22,7 +22,7 @@ def list_videos(
     # y mientras que likesCount no necesita estar autenticado, userLikes si, pues tiene los videos a los que el user le dio like. Por eso necesitamos que puedan acceder tanto si tienen JWT (y se verifica) como si no
     # GET /videos continúa siendo público, pero cuando recibe un JWT válido puede identificar cuáles videos tienen like del usuario.
     page: Annotated[int, Query(ge=1)] = 1,
-    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 7,
     category: Annotated[str | None, Query()] = None,
 ) -> VideoListResponse:
     return VideoService(session).list_videos(

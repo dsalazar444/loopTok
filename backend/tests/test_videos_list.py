@@ -64,7 +64,7 @@ def test_lists_videos_with_default_pagination(client, session):
     body = response.json()
     assert body["total"] == 3
     assert body["page"] == 1
-    assert body["pageSize"] == 20
+    assert body["pageSize"] == 7
     assert len(body["items"]) == 3
     assert body["items"][0]["url"].startswith("https://www.youtube.com/watch?v=")
     assert "s3Key" not in body["items"][0]
