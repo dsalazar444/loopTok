@@ -25,7 +25,7 @@ def test_creates_and_reads_video_with_youtube_id():
                 duration_seconds=180,
                 tags=["sunset", "mountain"],
                 upload_date=date(2026, 1, 1),
-                s3_key="videos/dQw4w9WgXcQ.mp4",
+                url="https://www.youtube.com/watch?v=-6yyP-agq9c",
             )
         )
         session.commit()

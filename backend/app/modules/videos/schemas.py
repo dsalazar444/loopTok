@@ -16,7 +16,7 @@ class VideoResponse(BaseModel):
     creator: str | None
     tags: list[str]
     upload_date: date | None = Field(serialization_alias="uploadDate")
-    s3_key: str = Field(serialization_alias="s3Key")
+    url: str 
 
 
 class VideoListResponse(BaseModel):

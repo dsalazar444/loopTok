@@ -66,7 +66,7 @@ class Video(BaseModel):
         Date,
     )
 
-    s3_key: Mapped[str] = mapped_column(
+    url: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
     )
