@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import BaseModel
 
 
-class Dislike(BaseModel):
-    __tablename__ = "dislikes"
+class NotInterested(BaseModel):
+    __tablename__ = "not_interested"
     # Imported columns:
     # id (UUID)
     # created_at (DateTime)
@@ -17,7 +17,7 @@ class Dislike(BaseModel):
         UniqueConstraint(
             "user_id",
             "video_id",
-            name="uq_dislikes_user_video",
+            name="uq_not_interested_user_video",
         ),
     )
 
