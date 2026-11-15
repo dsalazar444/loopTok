@@ -5,6 +5,8 @@ export interface Video {
   category: string;
   subcategory: string | null;
   url: string;
+  likesCount: number;
+  isLiked: boolean;
 }
 
 export interface VideoListResponse {
