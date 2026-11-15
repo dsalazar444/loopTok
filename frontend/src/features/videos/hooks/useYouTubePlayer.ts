@@ -65,14 +65,24 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
     const containerRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<YouTubePlayer | null>(null);
     const activeRef = useRef(isActive);
+    const isPlayerReadyRef = useRef(false);
+
     const [state, setState] = useState<PlayerState>('loading');
     const [muted, setMuted] = useState(true);
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         activeRef.current = isActive;
-        if (isActive) playerRef.current?.playVideo();
-        else playerRef.current?.pauseVideo();
+        const player = playerRef.current;
+
+        if (!isPlayerReadyRef.current || !player) {
+            return;
+        }
+        if (isActive) {
+            player.playVideo();
+        } else {
+            player.pauseVideo();
+        }
     }, [isActive]);
 
     useEffect(() => {
@@ -82,6 +92,7 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
         }
 
         let disposed = false;
+        let createdPlayer: YouTubePlayer | null = null;
         setState('loading');
         setMuted(true);
         setProgress(0);
@@ -90,7 +101,7 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
 
         void loadYouTubeAPI().then((YT) => {
             if (disposed) return;
-            playerRef.current = new YT.Player(mount, {
+            createdPlayer = new YT.Player(mount, {
                 videoId,
                 playerVars: {
                     autoplay: 0,
@@ -103,9 +114,17 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
                 events: {
                     onReady: ({ target }) => {
                         if (disposed) return;
+
+                        playerRef.current = target;
+                        isPlayerReadyRef.current = true;
+
                         target.mute();
+                        setMuted(true);
                         setState('ready');
-                        if (activeRef.current) target.playVideo();
+
+                        if (activeRef.current) {
+                            target.playVideo();
+                        }
                     },
                     onStateChange: ({ data }) => {
                         if (disposed) return;
@@ -122,17 +141,28 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
 
         return () => {
             disposed = true;
-            playerRef.current?.destroy();
+            isPlayerReadyRef.current = false;
+
             playerRef.current = null;
+
+            if (
+                createdPlayer &&
+                typeof createdPlayer.destroy === "function"
+            ) {
+                createdPlayer.destroy();
+            }
+
             mount.remove();
         };
     }, [videoId]);
 
     useEffect(() => {
         if (state !== 'playing') return;
+        
         const timer = window.setInterval(() => {
             const player = playerRef.current;
-            if (!player) return;
+
+            if (!isPlayerReadyRef.current || !player) return;
             const duration = player.getDuration();
             setProgress(duration > 0 ? (player.getCurrentTime() / duration) * 100 : 0);
         }, 250);
@@ -140,14 +170,22 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
     }, [state]);
 
     function togglePlayback() {
-        if (!isActive || !playerRef.current) return;
-        if (state === 'playing') playerRef.current.pauseVideo();
-        else playerRef.current.playVideo();
+        const player = playerRef.current;
+
+        if (!isActive || !isPlayerReadyRef.current || !player) {
+            return;
+        }
+
+        if (state === 'playing') {
+            player.pauseVideo();
+        } else {
+            player.playVideo();
+        }
     }
 
     function toggleMute() {
         const player = playerRef.current;
-        if (!player) return;
+        if (!isPlayerReadyRef.current || !player) return;
         if (player.isMuted()) player.unMute();
         else player.mute();
         setMuted(player.isMuted());
@@ -155,7 +193,8 @@ export function useYouTubePlayer(videoId: string | null, isActive: boolean) {
 
     function seek(percent: number) {
         const player = playerRef.current;
-        if (!player) return;
+        if (!isPlayerReadyRef.current || !player) return;
+
         const duration = player.getDuration();
         if (duration > 0) player.seekTo((Math.max(0, Math.min(percent, 100)) / 100) * duration, true);
         setProgress(percent);
