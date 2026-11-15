@@ -1,6 +1,6 @@
 import { mockRegister } from "../mocks/mockAuthApi";
 import { getRegistrationErrorMessage } from "../errors/authErrors";
-import { HTTP_ERROR_MESSAGES } from "../../../lib/errors/httpErrors";
+import { HTTP_ERROR_MESSAGES } from "../../../shared/errors/httpErrors";
 import type { RegisterRequest, User } from "../types";
 
 const useMockData = import.meta.env.VITE_USE_MOCK_DATA === "true";
