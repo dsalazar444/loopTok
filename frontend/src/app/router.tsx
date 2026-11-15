@@ -6,8 +6,9 @@ import {
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
 import { LoginForm } from "../features/auth/components/LoginForm";
+import { VideoFeed } from "../features/feed/components/VideoFeed";
 import { MainLayout } from "./MainLayout";
-import { HomePlaceholder, ProfilePlaceholder } from "./placeholders";
+import { ProfilePlaceholder } from "./placeholders";
 
 export function AppRouter() {
     return (
@@ -16,7 +17,7 @@ export function AppRouter() {
             <Route path="/login" element={<LoginForm />} />
 
             <Route element={<MainLayout />}>
-                <Route path="/" element={<HomePlaceholder />} />
+                <Route path="/" element={<VideoFeed />} />
 
                 <Route element={<ProtectedRoute />}>
                     <Route path="/profile" element={<ProfilePlaceholder />} />
@@ -27,3 +28,4 @@ export function AppRouter() {
         </Routes>
     );
 }
+

@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config, pool
 from app.core.config import get_settings
 from app.db.base import Base
 from app.modules.users.models import User  # es como un add en github -> obliga a python a leer archivo -> SQLAlchemy registra tabla dentro de base.metadata, para comparar asi lo que se espera (codigo py) y lo que hay (postgresql)
+from app.modules.videos.models import Video  # mismo motivo: registra la tabla videos en Base.metadata
 
 
 config = context.config
