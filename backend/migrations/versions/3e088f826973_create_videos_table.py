@@ -32,7 +32,7 @@ def upgrade() -> None:
     sa.Column('creator', sa.String(length=100), nullable=True),
     sa.Column('tags', sa.JSON(), server_default='[]', nullable=False),
     sa.Column('upload_date', sa.Date(), nullable=True),
-    sa.Column('s3_key', sa.String(length=255), nullable=False),
+    sa.Column('url', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('modified_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')

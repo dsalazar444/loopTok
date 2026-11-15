@@ -4,6 +4,7 @@ export interface Video {
   description: string;
   category: string;
   subcategory: string | null;
+  url: string;
 }
 
 export interface VideoListResponse {

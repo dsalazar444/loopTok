@@ -14,7 +14,7 @@ from app.modules.videos.models import Video
 # Swap for the real bucket key (e.g. "videos/<id>.mp4") once Persona B sets up storage.
 VIDEOS = [
     Video(
-        id="Dca2tzxVewQ",
+        id="6yyP-agq9c",
         title="What happens when @gordonramsay Hugh Jackman & @VancityReynolds get two tortillas ? This.",
         description="Gordon Ramsay shorts clip.",  # info.json description was empty
         category="cooking_food",
@@ -23,7 +23,7 @@ VIDEOS = [
         creator="Gordon Ramsay",
         tags=[],
         upload_date=date(2024, 7, 29),
-        s3_key="test/out/videos/Dca2tzxVewQ.mp4",
+        url="https://www.youtube.com/watch?v=-6yyP-agq9c",
     ),
     Video(
         id="Pw40-IoL5kY",
@@ -38,7 +38,7 @@ VIDEOS = [
         creator="TED-Ed",
         tags=[],
         upload_date=date(2023, 4, 28),
-        s3_key="test/out/videos/Pw40-IoL5kY.mp4",
+        url="test/out/videos/Pw40-IoL5kY.mp4",
     ),
 ]
 
