@@ -23,9 +23,7 @@ class Video(BaseModel):
         nullable=False,
     )
 
-    description: Mapped[str] = mapped_column(
-        nullable=False,
-    )
+    description: Mapped[str | None] = mapped_column(String(500))
 
     category: Mapped[str] = mapped_column(
         String(50),
