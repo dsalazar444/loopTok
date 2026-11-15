@@ -25,7 +25,7 @@ def make_video(index: int, category: str = "cooking_food") -> Video:
         duration_seconds=60,
         tags=[],
         upload_date=date(2026, 1, 1),
-        s3_key=f"test/out/videos/video-{index:03d}.mp4",
+        url=f"https://www.youtube.com/watch?v=video{index:06d}",
     )
 
 
@@ -63,7 +63,8 @@ def test_lists_videos_with_default_pagination(client, session):
     assert body["page"] == 1
     assert body["pageSize"] == 20
     assert len(body["items"]) == 3
-    assert body["items"][0]["s3Key"].startswith("test/out/videos/")
+    assert body["items"][0]["url"].startswith("https://www.youtube.com/watch?v=")
+    assert "s3Key" not in body["items"][0]
 
 
 def test_paginates_results(client, session):

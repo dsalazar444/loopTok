@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getVideos } from "../api/videosApi";
 import type { Video } from "../../videos/types";
 import { VideoCard } from "../../videos/components/VideoCard";
-import styles from "../styles/VideoFeed.module.css";
+import styles from "./styles/VideoFeed.module.css";
 
 type FeedState =
     | { status: "loading" }
