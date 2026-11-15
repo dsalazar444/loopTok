@@ -18,7 +18,7 @@ def service(session):
     service = LikeService(session)
 
     service.like_repository = MagicMock()
-    service.dislike_repository = MagicMock()
+    service.not_interested_repository = MagicMock()
     service.video_repository = MagicMock()
 
     return service
@@ -55,12 +55,12 @@ def test_add_like_success(service, session, user_id, video_id):
     session.commit.assert_called_once()
 
 
-def test_add_like_removes_dislike(service, user_id, video_id):
+def test_add_like_removes_not_interested(service, user_id, video_id):
     service.video_repository.get_by.return_value = MagicMock()
 
     service.add_like(user_id, video_id)
 
-    service.dislike_repository.remove_dislike.assert_called_once_with(
+    service.not_interested_repository.remove_not_interested.assert_called_once_with(
         user_id=user_id,
         video_id=video_id,
     )
