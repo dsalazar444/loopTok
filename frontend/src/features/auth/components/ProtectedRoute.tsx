@@ -1,11 +1,11 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 export function ProtectedRoute() {
-    const { user } = useAuth();
+    const { isAuthenticated } = useAuth();
     const location = useLocation();
 
-    if (!user) {
+    if (!isAuthenticated) {
         // "from" permite volver a la página pedida después de iniciar sesión
         return <Navigate to="/login" replace state={{ from: location.pathname }} />;
     }

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router";
-import { useAuth } from "../features/auth/AuthContext";
+import { useAuth } from "../features/auth/context/AuthContext";
 import styles from "./MainLayout.module.css";
 
 const iconProps = {

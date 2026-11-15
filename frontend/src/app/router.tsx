@@ -5,14 +5,15 @@ import {
 } from "react-router";
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
+import { LoginForm } from "../features/auth/components/LoginForm";
 import { MainLayout } from "./MainLayout";
-import { HomePlaceholder, LoginPlaceholder, ProfilePlaceholder } from "./placeholders";
+import { HomePlaceholder, ProfilePlaceholder } from "./placeholders";
 
 export function AppRouter() {
     return (
         <Routes>
             <Route path="/register" element={<RegisterForm />} />
-            <Route path="/login" element={<LoginPlaceholder />} />
+            <Route path="/login" element={<LoginForm />} />
 
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePlaceholder />} />
