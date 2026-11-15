@@ -13,6 +13,9 @@ from sqlalchemy.pool import StaticPool
 from app.db.base import Base
 from app.db.session import get_db_session
 from app.main import app
+from app.core.dependencies import get_optional_user
+from app.modules.dislikes.models import Dislike
+from app.modules.users.models import User
 from app.modules.videos.models import Video
 
 
@@ -92,6 +95,27 @@ def test_filters_by_category(client, session):
     body = response.json()
     assert body["total"] == 1
     assert body["items"][0]["category"] == "animation_edu"
+
+
+def test_hides_videos_disliked_by_the_user(client, session):
+    user = User(full_name="Test", username="tester", password_hash="x")
+    other = User(full_name="Other", username="other", password_hash="x")
+    session.add_all([user, other, make_video(0), make_video(1)])
+    session.flush()
+    session.add(Dislike(user_id=user.id, video_id="video-000"))
+    session.commit()
+
+    app.dependency_overrides[get_optional_user] = lambda: user
+    mine = client.get("/videos").json()
+    app.dependency_overrides[get_optional_user] = lambda: other
+    theirs = client.get("/videos").json()
+    app.dependency_overrides.pop(get_optional_user)
+    anonymous = client.get("/videos").json()
+
+    assert [v["id"] for v in mine["items"]] == ["video-001"]
+    assert mine["total"] == 1
+    assert theirs["total"] == 2
+    assert anonymous["total"] == 2
 
 
 def test_rejects_invalid_page(client, session):

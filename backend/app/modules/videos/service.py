@@ -23,6 +23,7 @@ class VideoService:
             page=page,
             page_size=page_size,
             category=category,
+            user_id=user_id,
         )
 
         video_ids = [video.id for video in videos]
