@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, InstrumentedAttribute
 from typing import Any
 from uuid import UUID
 
-from app.modules.dislikes.models import Dislike
+from app.modules.not_interested.models import NotInterested
 from app.modules.videos.models import Video
 
 
@@ -29,12 +29,12 @@ class VideoRepository:
 
         # hide videos this user marked as "not interested"; applied to the count too so pagination stays right
         if user_id is not None:
-            not_disliked = ~exists().where(
-                Dislike.video_id == Video.id,
-                Dislike.user_id == user_id,
+            not_marked = ~exists().where(
+                NotInterested.video_id == Video.id,
+                NotInterested.user_id == user_id,
             )
-            statement = statement.where(not_disliked)
-            count_statement = count_statement.where(not_disliked)
+            statement = statement.where(not_marked)
+            count_statement = count_statement.where(not_marked)
 
         total = self.session.scalar(count_statement) or 0
 
