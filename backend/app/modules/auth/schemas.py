@@ -35,4 +35,21 @@ class RegisterRequest(BaseModel):
 
         return value
 
-# dto de response va en user, porque lo que se retorna es sobre el recurso user, no sobre el auth
+
+class LoginRequest(BaseModel):
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
+
+    @field_validator("username", mode="before")
+    @classmethod
+    def normalize_username(cls, value: str) -> str:
+        if not isinstance(value, str):
+            raise ValueError("Username must be a string")
+
+        return value.strip().lower()
+
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
