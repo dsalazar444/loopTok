@@ -8,7 +8,7 @@ class VideoResponse(BaseModel):
 
     id: str
     title: str
-    description: str
+    description: str | None
     category: str
     subcategory: str | None
     language: str

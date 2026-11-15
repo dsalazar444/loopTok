@@ -45,3 +45,15 @@
     color: var(--color-primary);
     font-size: 13px;
 }
+
+.actions {
+    position: absolute;
+    right: 12px;
+    bottom: 140px;
+    z-index: 3;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
