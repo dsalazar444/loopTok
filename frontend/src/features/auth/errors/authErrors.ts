@@ -1,7 +1,7 @@
 import {
     HTTP_ERROR_MESSAGES,
     HTTP_STATUS,
-} from "../../../lib/errors/httpErrors";
+} from "../../../shared/errors/httpErrors";
 
 export const AUTH_ERROR_MESSAGES = {
     USERNAME_TAKEN: "Este nombre de usuario ya está en uso.",
