@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 class ErrorCode(str, Enum):
     USERNAME_ALREADY_EXISTS = "USERNAME_ALREADY_EXISTS"
     INVALID_TOKEN = "INVALID_TOKEN"
+    INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
 
 class AppException(HTTPException):
     def __init__(
@@ -35,4 +36,12 @@ class InvalidTokenError(AppException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             code=ErrorCode.INVALID_TOKEN,
             message="Invalid or expired token",
+        )
+
+class InvalidCredentialsError(AppException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            code=ErrorCode.INVALID_CREDENTIALS,
+            message="Invalid username or password",
         )

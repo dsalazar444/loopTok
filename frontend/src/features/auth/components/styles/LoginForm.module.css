@@ -1,0 +1,281 @@
+.page {
+    min-height: 100dvh;
+    width: 100%;
+    background: var(--color-background);
+    color: #ffffff;
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 0 28px 48px;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    top: 42px;
+    left: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.backButton svg {
+    width: 26px;
+    height: 26px;
+}
+
+.header {
+    padding-top: 112px;
+    margin-bottom: 36px;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 26px;
+
+    color: var(--color-primary);
+}
+
+.logo svg {
+    width: 58px;
+    height: 58px;
+}
+
+.header h1 {
+    margin: 0 0 12px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+}
+
+.header p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.field {
+    width: 100%;
+}
+
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 58px;
+    padding: 0 18px;
+
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid #535b65;
+    border-radius: 15px;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.inputWrapper:focus-within {
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.inputIcon {
+    width: 23px;
+    height: 23px;
+    flex-shrink: 0;
+    color: #ffffff;
+}
+
+.inputWrapper input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 0 0 20px;
+
+    border: none;
+    outline: none;
+    background: transparent;
+
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.inputWrapper input::placeholder {
+    color: #e0e0e0;
+    opacity: 1;
+}
+
+.inputWrapper input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.visibilityButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 36px;
+    padding: 0;
+    margin-left: 8px;
+
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.visibilityButton svg {
+    width: 22px;
+    height: 22px;
+}
+
+.visibilityButton:focus-visible,
+.backButton:focus-visible,
+.registerButton:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+.error {
+    margin: 0;
+    padding: 12px 14px;
+
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+
+    color: #fca5a5;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.submitButton {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 32px;
+
+    border: none;
+    border-radius: 14px;
+    background: var(--color-primary);
+
+    color: #071015;
+    font-size: 17px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.submitButton:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.footer {
+    margin-top: 38px;
+    text-align: center;
+}
+
+.footer p {
+    margin: 0 0 12px;
+    color: #e5e7eb;
+    font-size: 16px;
+}
+
+.registerButton {
+    display: inline-block;
+    color: var(--color-primary);
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.registerButton:hover {
+    text-decoration: underline;
+}
+
+/* Compact screens */
+
+@media (max-width: 360px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .backButton {
+        left: 20px;
+    }
+
+    .header h1 {
+        font-size: 27px;
+    }
+}
+
+/* Short landscape screens */
+
+@media (max-height: 650px) {
+    .header {
+        padding-top: 85px;
+        margin-bottom: 26px;
+    }
+
+    .logo {
+        margin-bottom: 18px;
+    }
+
+    .submitButton {
+        margin-top: 20px;
+    }
+
+    .footer {
+        margin-top: 28px;
+    }
+}
