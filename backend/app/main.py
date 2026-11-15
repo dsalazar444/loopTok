@@ -5,6 +5,8 @@ from app.core.config import get_settings
 from app.modules.users.router import router as users_router
 from app.modules.auth.router import router as auth_router
 from app.modules.videos.router import router as videos_router
+from app.modules.likes.router import router as likes_router
+
 
 settings = get_settings()
 
@@ -21,6 +23,7 @@ app.add_middleware(
 app.include_router(users_router)
 app.include_router(auth_router)
 app.include_router(videos_router)
+app.include_router(likes_router)
 
 
 @app.get("/health")
