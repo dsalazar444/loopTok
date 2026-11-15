@@ -5,8 +5,9 @@ import {
 } from "react-router";
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import { RegisterForm } from "../features/auth/components/RegisterForm";
+import { VideoFeed } from "../features/feed/components/VideoFeed";
 import { MainLayout } from "./MainLayout";
-import { HomePlaceholder, LoginPlaceholder, ProfilePlaceholder } from "./placeholders";
+import { LoginPlaceholder, ProfilePlaceholder } from "./placeholders";
 
 export function AppRouter() {
     return (
@@ -15,7 +16,7 @@ export function AppRouter() {
             <Route path="/login" element={<LoginPlaceholder />} />
 
             <Route element={<MainLayout />}>
-                <Route path="/" element={<HomePlaceholder />} />
+                <Route path="/" element={<VideoFeed />} />
 
                 <Route element={<ProtectedRoute />}>
                     <Route path="/profile" element={<ProfilePlaceholder />} />

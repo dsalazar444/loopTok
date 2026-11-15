@@ -1,18 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router";
 import { useAuth } from "../features/auth/AuthContext";
 
-export function HomePlaceholder() {
-    return (
-        <div style={{ padding: "32px", color: "white" }}>
-            <h1>LoopTok</h1>
-            <p>Home page is not implemented yet.</p>
-            <Link to="/register" style={{ color: "#32c9f5" }}>
-                Register
-            </Link>
-        </div>
-    );
-}
-
 export function LoginPlaceholder() {
     const location = useLocation();
     const navigate = useNavigate();

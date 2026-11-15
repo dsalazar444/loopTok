@@ -13,11 +13,16 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    scrollbar-width: none;
+    scroll-snap-type: y mandatory;
+}
+
+.content::-webkit-scrollbar {
+    display: none;
 }
 
 .nav {
     display: flex;
-    border-top: 1px solid #1d242b;
     background: var(--color-background);
 }
 
