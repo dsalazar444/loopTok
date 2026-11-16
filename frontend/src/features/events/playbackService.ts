@@ -1,4 +1,4 @@
-// Encargado de calcular las métricas.
+// Encargado de calcular las métricas, no usa react es lógica independiente.
 import type {
   AbandonReason,
   PlaybackEvent,
@@ -9,6 +9,7 @@ import type {
 
 // regla de negocio: Para videos de duración <= 60 s, se mandan metricas de progreso cada que se alcance cierto porcentaje de reproducción
 // Para vieos mayores de 60 s, se manda metricas de progreso cada 12 s, porque si se usa porcentajes, se podrían mandar cada mucho tiempo
+// cuando un video corto alcanza estos porcentajes podemos generar un evento de progreso.
 const SHORT_VIDEO_MAX_SECONDS = 60;
 const LONG_VIDEO_PROGRESS_MS = 12_000;
 const SHORT_VIDEO_MILESTONES = [25, 50, 75];
@@ -19,7 +20,7 @@ export class PlaybackTracker {
   private readonly playbackId = crypto.randomUUID(); // permite que backend agrupe todos los eventos de una misma instancia
   private readonly videoId: string;
   private readonly onEvent: PlaybackEventHandler;
-
+  // informacion que PlaybackTracker necesita para calcular metricas
   private watchTimeMs = 0; // tiempo neto, porque tendrá en cuenta las n replayed
   private lastStartedAt: number | null = null; // Instante desde el cual se está acumulando tiempo de reproducción -> porque puede haber replay -> positionSeconds es relativo a este
 
@@ -31,12 +32,12 @@ export class PlaybackTracker {
   private isStarted = false; // Ambos is.. porque reproducción puede estar iniciada, pero estár pausada. Por eso necesitamos ambas variables
   private isPlaying = false;
 
-  private emittedMilestones = new Set<number>(); // Porcentajes de progreso que ya generaron eventos.
+  private emittedMilestones = new Set<number>(); // Porcentajes de progreso sin repetir que ya generaron eventos.
   private lastProgressWatchTimeMs = 0; // Tiempo neto acumulado cuando se emitió el último evento de progreso de un video largo.
 
   constructor(videoId: string, onEvent: PlaybackEventHandler) {
     this.videoId = videoId;
-    this.onEvent = onEvent;
+    this.onEvent = onEvent; //guarda la funcion recibida para usarla posteriormente.
   }
 
 
@@ -48,7 +49,7 @@ export class PlaybackTracker {
     }
     // obtenemos timestamp actual
     const now = performance.now();
-
+    //calcular cuanto tiempo pasó:
     // al tiempo neto, añadimos nuevo "bloque", que iria desde la ultima vez que se despausó hasta ahora
     // por ejemplo, empiezan a reproducir en t=1, entonces laststartedat=1, y cuando se llame esta funcion (pro ejm en progress)
     // 3 s despues, laststared=1 y tactual=3, el watchtime seria 3-1 = 2, porque es el tiempo neto
@@ -72,9 +73,9 @@ export class PlaybackTracker {
       eventType,
       playbackId: this.playbackId,
       videoId: this.videoId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(), //obtiene la fecha/hora actual y la convierte a String
 
-      watchTimeMs: Math.round(this.watchTimeMs),
+      watchTimeMs: Math.round(this.watchTimeMs), //redondear numero al entero más cercano
       positionSeconds: this.positionSeconds,
       durationSeconds: this.durationSeconds,
       maxProgressPercent: this.maxProgressPercent,
@@ -86,7 +87,7 @@ export class PlaybackTracker {
 
       playCount: this.playCount,
 
-      ...(reason ? { reason } : {}),
+      ...(reason ? { reason } : {}), // si reason existe se agrega al objeto si no se agrega {}
       ...(milestonePercent !== undefined ? { milestonePercent } : {}),
     };
   }
@@ -102,7 +103,7 @@ export class PlaybackTracker {
 
   // actualiza progreso actual y máximo
   private updateSample(sample: PlaybackSample): void {
-    const { positionSeconds, durationSeconds } = sample;
+    const { positionSeconds, durationSeconds } = sample; //extraer las 2 propeidades de sample
 
     // validamos
     if (
@@ -114,6 +115,7 @@ export class PlaybackTracker {
     }
 
     // positionSeconds es mayor que 0, y el minimo entre position y duration
+    // se limitam la posicion de intervalo entre 0 y la duración total
     this.positionSeconds = Math.max(
       0,
       Math.min(positionSeconds, durationSeconds)
@@ -124,7 +126,7 @@ export class PlaybackTracker {
     const percent =
       (this.positionSeconds / durationSeconds) * 100;
 
-    // actualiza maxprogress si alcanzamos nuevo máximo
+    // actualiza maxprogress si alcanzamos nuevo máximo en comparación con el % anterior
     this.maxProgressPercent = Math.max(
       this.maxProgressPercent,
       Math.min(100, percent)
@@ -146,15 +148,15 @@ export class PlaybackTracker {
     this.lastStartedAt = performance.now(); // setteamos momento de inicio de reproduccion
   }
 
-  // se ejecuta periodicamente mientras video se reproduce
+  // se ejecuta periodicamente mientras video se reproduce (registra el progreso)
   progress(sample: PlaybackSample): void {
     if (!this.isPlaying) return;
 
     // actualiza watchtime y sample (recordemos que progress se ejecuta cada cierto tiempo, entonces debe actualizar valores, pues pueden ser diferentes)
     this.accumulateWatchTime();
-    this.updateSample(sample);
+    this.updateSample(sample); //actualiza la posición y duración
 
-    // verifica si hay que generar evento, si es para video corto o para largo
+    // verifica si hay que generar evento, si es para video corto (porcentajes) o para largo (intervalos 12segs)
     if (this.durationSeconds <= SHORT_VIDEO_MAX_SECONDS) {
       this.checkShortVideoProgress();
     } else {
@@ -166,11 +168,11 @@ export class PlaybackTracker {
     for (const milestone of SHORT_VIDEO_MILESTONES) {
         // si el maximo porcentaje alcanzado es mayor a porcentaje milestone, y no se ha generado evento 
       if (
-        this.maxProgressPercent >= milestone &&
+        this.maxProgressPercent >= milestone && // si el user alzanzó milestone y no se ha registrado
         !this.emittedMilestones.has(milestone)
       ) {
         this.emittedMilestones.add(milestone); // añadimos milestone y generamos evento
-        this.emit("video_progress", undefined, milestone);
+        this.emit("video_progress", undefined, milestone); 
       }
     }
   }
@@ -190,12 +192,13 @@ export class PlaybackTracker {
   pause(sample: PlaybackSample): void {
     if (!this.isPlaying) return;
 
-    // actualizamos tiempos y valores de progreso
+    // actualizamos tiempos y valores de progreso antes de pausar -> para no perder nos segundos desde la ultima llamada a progress()
     this.accumulateWatchTime();
     this.updateSample(sample);
 
     this.isPlaying = false;
     this.lastStartedAt = null;
+    //isStarted sigue como true para reaunidar sin generar otro evento video_started
   }
 
   complete(sample: PlaybackSample): void {
@@ -203,10 +206,10 @@ export class PlaybackTracker {
 
     this.pause(sample); // para que actualice valores 
 
-    this.playCount += 1;
+    this.playCount += 1; //incrementa contadores de reproducciones completas
     this.emit("video_completed");
 
-    // "reiniciamos" los valores
+    // "reiniciamos" los valores para poder registrar una nueva reproducción
     this.isStarted = false;
     this.emittedMilestones.clear();
     this.maxProgressPercent = 0;
@@ -214,7 +217,7 @@ export class PlaybackTracker {
   }
 
   abandon(
-    sample: PlaybackSample,
+    sample: PlaybackSample, //posición y duración actual 
     reason: AbandonReason = "navigation"
   ): void {
     if (!this.isStarted) return; // no se puede abandonar si no se ha iniciado

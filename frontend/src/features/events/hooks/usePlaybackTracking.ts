@@ -1,6 +1,6 @@
 // 	Administrar el ciclo de vida del tracker y reaccionar a inicio, pausa, finalización y abandono.
-// administrar la instancia de PlaybackTracker
-import { useCallback, useRef } from "react";
+//  administrar la instancia de PlaybackTracker (permite que un componente de react controle el seguimiento de reproducción de un video)
+import { useCallback, useRef } from "react"; //usado para guardar PlaybackTracker
 
 import { PlaybackTracker } from "../playbackService";
 import type {
@@ -13,26 +13,26 @@ export function usePlaybackTracking(
   videoId: string | null,
   isAuthenticated: boolean
 ) {
-  const trackerRef = useRef<PlaybackTracker | null>(null);
+  const trackerRef = useRef<PlaybackTracker | null>(null); // guardar un objeto de tipo PlaybackTracker o ninguno 
 
   // Temporary event handler for testing. -> implementacion de handles especificaod en types
   const handleEvent = useCallback((event: PlaybackEvent) => {
     console.log("[LoopTok Playback]", event); // despues, ddeberá usar api para comunicarse con back
   }, []);
 
-  // Create a tracker only when playback actually starts.
+  // Create a tracker only when playback actually starts. (Registrar reproducción)
   const start = useCallback(
     (sample: PlaybackSample) => {
-      if (!isAuthenticated || !videoId) return; // si no esta auth o no hay video, no se crea tracker
+      if (!isAuthenticated || !videoId) return; // si no esta auth, no hay video o no hay informaciond de sample, no se crea tracker
     // creamos tracker si no existe
       if (!trackerRef.current) {
         trackerRef.current = new PlaybackTracker(
           videoId,
-          handleEvent
+          handleEvent //indica qué función recibirá los eventos generados
         );
       }
 
-      trackerRef.current.start(sample);
+      trackerRef.current.start(sample); // iniciar la reproducción / iniciar el seguimiento y generar el evento video_started cuando corresponde.
     },
     [videoId, isAuthenticated, handleEvent]
   );
@@ -40,7 +40,7 @@ export function usePlaybackTracking(
   // Update playback metrics periodically.
   const progress = useCallback(
     (sample: PlaybackSample) => {
-      trackerRef.current?.progress(sample);
+      trackerRef.current?.progress(sample); //Si existe un tracker, ejecuta su método progress y pasarle el sample
     },
     []
   );
@@ -53,7 +53,7 @@ export function usePlaybackTracking(
     []
   );
 
-  // Complete the current loop without discarding the tracker.
+  // Se quiere conservar el tracker después de completar el video.
   const complete = useCallback(
     (sample: PlaybackSample) => {
       trackerRef.current?.complete(sample);
@@ -68,7 +68,7 @@ export function usePlaybackTracking(
       reason: AbandonReason
     ) => {
       trackerRef.current?.abandon(sample, reason);
-      trackerRef.current = null;
+      trackerRef.current = null; // Se borra la referencia al tracker
     },
     []
   );
