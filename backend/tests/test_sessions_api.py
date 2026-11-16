@@ -20,6 +20,7 @@ from app.db.session import get_db_session
 from app.main import app
 from app.modules.sessions.models import UserSession
 from app.modules.sessions.repository import SessionRepository
+from app.modules.sessions.service import SessionService
 from app.modules.users.models import User
 
 LIMIT = timedelta(minutes=get_settings().session_inactivity_minutes)
@@ -256,6 +257,33 @@ def test_rejects_a_session_id_that_is_not_a_uuid(client, user):
     assert client.post("/sessions", json={"session_id": "nope"}, headers=headers_for(user)).status_code == 422
     assert client.post("/sessions/nope/heartbeat", headers=headers_for(user)).status_code == 422
     assert client.post("/sessions/nope/end", headers=headers_for(user)).status_code == 422
+
+
+# --- cleaner (scripts/close_idle_sessions.py) ---
+
+def test_close_idle_closes_only_idle_open_sessions(session, user, other_user):
+    idle = add_session(session, user, idle=LIMIT + timedelta(minutes=1))
+    idle_of_other_user = add_session(session, other_user, idle=LIMIT + timedelta(hours=3))
+    recent = add_session(session, user, idle=timedelta(minutes=5))
+    already_ended = add_session(session, user, idle=LIMIT + timedelta(hours=1), ended=True)
+    idle_last_seen = naive(idle.last_seen_at)
+
+    closed = SessionService(session).close_idle()
+
+    assert closed == 2
+    assert reload(session, idle.id).end_reason == "inactivity"
+    assert reload(session, idle.id).ended_at == idle_last_seen  # last heartbeat, not "now"
+    assert reload(session, idle_of_other_user.id).end_reason == "inactivity"
+    assert reload(session, recent.id).ended_at is None
+    assert reload(session, already_ended.id).end_reason == "logout"  # untouched
+
+
+def test_close_idle_can_run_repeatedly(session, user):
+    add_session(session, user, idle=LIMIT + timedelta(minutes=1))
+    service = SessionService(session)
+
+    assert service.close_idle() == 1
+    assert service.close_idle() == 0
 
 
 # --- repository ---

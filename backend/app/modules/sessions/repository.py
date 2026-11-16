@@ -16,7 +16,6 @@ class SessionRepository:
         # populate_existing: bulk UPDATEs below must not leave a stale copy in the session
         return self.session.get(UserSession, session_id, populate_existing=True)
 
-    # idempotent: two simultaneous "start" requests (React StrictMode does this) must not fail
     def create_if_absent(self, session_id: UUID, user_id: UUID, now: datetime) -> None:
         if self.get(session_id) is not None:
             return
@@ -32,7 +31,7 @@ class SessionRepository:
             )
             self.session.flush()
         except IntegrityError:
-            self.session.rollback()  # the other request inserted the same session_id first
+            self.session.rollback()  
 
     # True only if the session is open, belongs to the user and was active after `cutoff`
     def touch(
@@ -54,6 +53,19 @@ class SessionRepository:
         )
 
         return self.session.execute(stmt).rowcount == 1
+
+    # closes every open session idle since before `cutoff`; its end is the last heartbeat, never "now".
+    def close_idle(self, cutoff: datetime) -> int:
+        stmt = (
+            update(UserSession)
+            .where(
+                UserSession.ended_at.is_(None),
+                UserSession.last_seen_at < cutoff,
+            )
+            .values(ended_at=UserSession.last_seen_at, end_reason="inactivity")
+        )
+
+        return self.session.execute(stmt).rowcount
 
     # True only if an open session of the user was closed; `active_since` also requires recent activity
     def close(

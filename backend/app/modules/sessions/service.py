@@ -49,6 +49,13 @@ class SessionService:
 
         self.session.commit()
 
+    # used by scripts/close_idle_sessions.py; safe to run repeatedly
+    def close_idle(self) -> int:
+        closed = self.session_repository.close_idle(self._cutoff(_utcnow()))
+        self.session.commit()
+
+        return closed
+
     def _touch_or_expire(self, user_id: UUID, session_id: UUID, now: datetime) -> None:
         if self.session_repository.touch(session_id, user_id, now, self._cutoff(now)):
             self.session.commit()
