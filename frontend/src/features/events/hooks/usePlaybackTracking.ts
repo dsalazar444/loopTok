@@ -1,6 +1,8 @@
 // 	Administrar el ciclo de vida del tracker y reaccionar a inicio, pausa, finalización y abandono.
-//  administrar la instancia de PlaybackTracker (permite que un componente de react controle el seguimiento de reproducción de un video)
-import { useCallback, useRef } from "react"; //usado para guardar PlaybackTracker
+// administrar la instancia de PlaybackTracker (permite que un componente de react controle el seguimiento de reproducción de un video)
+import { useCallback, useRef } from "react";
+import { sendPlaybackEvent } from "../api/playbackApi";
+import { useAuth } from "../../auth/context/AuthContext";
 
 import { PlaybackTracker } from "../playbackService";
 import type {
@@ -13,12 +15,18 @@ export function usePlaybackTracking(
   videoId: string | null,
   isAuthenticated: boolean
 ) {
-  const trackerRef = useRef<PlaybackTracker | null>(null); // guardar un objeto de tipo PlaybackTracker o ninguno 
+  const trackerRef = useRef<PlaybackTracker | null>(null);
+  const { token } = useAuth();
 
   // Temporary event handler for testing. -> implementacion de handles especificaod en types
-  const handleEvent = useCallback((event: PlaybackEvent) => {
-    console.log("[LoopTok Playback]", event); // despues, ddeberá usar api para comunicarse con back
-  }, []);
+  const handleEvent = useCallback((event: PlaybackEvent): void  => {
+    if (!token) return;
+
+    void sendPlaybackEvent(token, event).catch((error: unknown) => {
+        console.error("Failed to send playback event:", error);
+        
+    });
+  }, [token]);
 
   // Create a tracker only when playback actually starts. (Registrar reproducción)
   const start = useCallback(
