@@ -9,6 +9,7 @@ from app.modules.users.models import User  # es como un add en github -> obliga 
 from app.modules.videos.models import Video  # mismo motivo: registra la tabla videos en Base.metadata
 from app.modules.likes.models import Like
 from app.modules.not_interested.models import NotInterested
+from app.modules.sessions.models import UserSession
 
 config = context.config
 

@@ -6,6 +6,8 @@ class ErrorCode(str, Enum):
     INVALID_TOKEN = "INVALID_TOKEN"
     INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
     VIDEO_NOT_FOUND = "VIDEO_NOT_FOUND"
+    SESSION_NOT_FOUND = "SESSION_NOT_FOUND"
+    SESSION_EXPIRED = "SESSION_EXPIRED"
 
 class AppException(HTTPException):
     def __init__(
@@ -53,4 +55,20 @@ class VideoNotFoundError(AppException):
             status_code=status.HTTP_404_NOT_FOUND,
             code=ErrorCode.VIDEO_NOT_FOUND,
             message=f"Video with id {video_id} not found",
+        )
+
+class SessionNotFoundError(AppException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            code=ErrorCode.SESSION_NOT_FOUND,
+            message="Session not found",
+        )
+
+class SessionExpiredError(AppException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_409_CONFLICT,
+            code=ErrorCode.SESSION_EXPIRED,
+            message="Session has ended or expired",
         )

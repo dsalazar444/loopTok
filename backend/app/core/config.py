@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256" # valor opcional que este en .env, si no, toma por default
     access_token_expire_minutes: int = 60
+    session_inactivity_minutes: int = 10 
     frontend_origin: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict( # config interna de pydantic
