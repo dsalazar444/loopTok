@@ -7,6 +7,7 @@ import { VideoCard } from "../../videos/components/VideoCard";
 
 import { useAuth } from "../../auth/context/AuthContext";
 import { addLike, removeLike } from "../../interactions/api/likesApi";
+import { markNotInterested } from "../../interactions/api/notInterestedApi";
 import { ApiError } from "../../../shared/api/httpClient";
 
 import styles from "./styles/VideoFeed.module.css";
@@ -35,10 +36,15 @@ export function VideoFeed() {
 
     const [likeError, setLikeError] = useState<string | null>(null);
 
+    // Short confirmation or error message for "not interested"
+    const [notice, setNotice] = useState<string | null>(null);
+
     const feedRef = useRef<HTMLDivElement>(null);
 
     // Prevent simultaneous like operations on the same video
     const pendingLikesRef = useRef<Set<string>>(new Set());
+
+    const pendingNotInterestedRef = useRef<Set<string>>(new Set());
 
     // Fetch videos and their like states
     useEffect(() => {
@@ -160,6 +166,61 @@ export function VideoFeed() {
         [isAuthenticated, token, state, navigate, logout]
     );
 
+    // Mark a video as "not interested" and drop it from the feed
+    const handleNotInterested = useCallback(
+        async (videoId: string) => {
+            if (!isAuthenticated || !token) {
+                navigate("/login");
+                return;
+            }
+
+            if (pendingNotInterestedRef.current.has(videoId)) {
+                return;
+            }
+
+            pendingNotInterestedRef.current.add(videoId);
+
+            try {
+                await markNotInterested(videoId, token);
+
+                // the backend now hides this video for the user, so remove it here too
+                setState((previous) => {
+                    if (previous.status !== "ready") {
+                        return previous;
+                    }
+
+                    return {
+                        ...previous,
+                        videos: previous.videos.filter(
+                            (item) => item.id !== videoId
+                        ),
+                    };
+                });
+
+                setNotice("Listo. Verás menos videos así.");
+            } catch (error) {
+                if (error instanceof ApiError && error.status === 401) {
+                    logout();
+                    navigate("/login");
+                } else {
+                    setNotice("No se pudo guardar. Intenta de nuevo.");
+                }
+            } finally {
+                pendingNotInterestedRef.current.delete(videoId);
+            }
+        },
+        [isAuthenticated, token, navigate, logout]
+    );
+
+    // Hide the message after a few seconds
+    useEffect(() => {
+        if (!notice) return;
+
+        const timer = setTimeout(() => setNotice(null), 3000);
+
+        return () => clearTimeout(timer);
+    }, [notice]);
+
     // Observe only changes in the loaded video list
     const videoIdsKey =
         state.status === "ready"
@@ -245,6 +306,12 @@ export function VideoFeed() {
                 <p role="alert">{likeError}</p>
             )}
 
+            {notice && (
+                <p className={styles.toast} role="status">
+                    {notice}
+                </p>
+            )}
+
             {state.videos.map((video) => (
                 <div
                     key={video.id}
@@ -256,6 +323,7 @@ export function VideoFeed() {
                         isActive={activeVideoId === video.id}
                         onLike={() => handleLike(video.id)}
                         isLikePending={pendingLikes.has(video.id)}
+                        onNotInterested={() => handleNotInterested(video.id)}
                     />
                 </div>
             ))}
