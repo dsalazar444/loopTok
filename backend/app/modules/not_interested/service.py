@@ -1,6 +1,7 @@
 from uuid import UUID
 from sqlalchemy.orm import Session
 
+from app.db.locks import lock_user_video
 from app.modules.not_interested.repository import NotInterestedRepository
 from app.modules.likes.repository import LikeRepository
 from app.modules.videos.models import Video
@@ -19,6 +20,7 @@ class NotInterestedService:
         self._validate_video_exists(video_id)
 
         # like and not_interested are mutually exclusive: the last action wins
+        lock_user_video(self.session, user_id, video_id)
         self.like_repository.remove_like(
             user_id=user_id,
             video_id=video_id,

@@ -55,10 +55,13 @@ def test_add_like_success(service, session, user_id, video_id):
     session.commit.assert_called_once()
 
 
-def test_add_like_removes_not_interested(service, user_id, video_id):
+def test_add_like_removes_not_interested(service, session, user_id, video_id):
     service.video_repository.get_by.return_value = MagicMock()
 
     service.add_like(user_id, video_id)
+
+    # the (user, video) advisory lock is what makes "last action wins" safe under concurrency
+    session.execute.assert_called_once()
 
     service.not_interested_repository.remove_not_interested.assert_called_once_with(
         user_id=user_id,
