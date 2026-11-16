@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { getVideos } from "../../videos/api/videosApi";
 import type { Video } from "../../videos/types";
 import { VideoCard } from "../../videos/components/VideoCard";
-
 import { useAuth } from "../../auth/context/AuthContext";
 import { addLike, removeLike } from "../../interactions/api/likesApi";
 import { markNotInterested } from "../../interactions/api/notInterestedApi";
 import { ApiError } from "../../../shared/api/httpClient";
-
 import styles from "./styles/VideoFeed.module.css";
+const ANONYMOUS_VIDEO_LIMIT = 1;
 
 type FeedState =
     | { status: "loading" }
@@ -300,6 +298,13 @@ export function VideoFeed() {
         return <p className={styles.message}>No videos available.</p>;
     }
 
+    // without a session only the first videos are shown, followed by a card asking to log in
+    const visibleVideos = isAuthenticated
+        ? state.videos
+        : state.videos.slice(0, ANONYMOUS_VIDEO_LIMIT);
+
+    const hasHiddenVideos = visibleVideos.length < state.videos.length;
+
     return (
         <div className={styles.feed} ref={feedRef}>
             {likeError && (
@@ -312,7 +317,7 @@ export function VideoFeed() {
                 </p>
             )}
 
-            {state.videos.map((video) => (
+            {visibleVideos.map((video) => (
                 <div
                     key={video.id}
                     className={styles.item}
@@ -327,6 +332,20 @@ export function VideoFeed() {
                     />
                 </div>
             ))}
+
+            {hasHiddenVideos && (
+                <div className={styles.item}>
+                    <div className={styles.gate}>
+                        <h2 className={styles.gateTitle}>
+                            Inicia sesión para seguir viendo
+                        </h2>
+
+                        <p className={styles.gateText}>
+                            Dale click en ingresar para ver más videos.
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
