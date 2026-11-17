@@ -8,6 +8,7 @@ class ErrorCode(str, Enum):
     VIDEO_NOT_FOUND = "VIDEO_NOT_FOUND"
     SESSION_NOT_FOUND = "SESSION_NOT_FOUND"
     SESSION_EXPIRED = "SESSION_EXPIRED"
+    EVENT_PUBLISH_FAILED = "EVENT_PUBLISH_FAILED"
 
 class AppException(HTTPException):
     def __init__(
@@ -71,4 +72,12 @@ class SessionExpiredError(AppException):
             status_code=status.HTTP_409_CONFLICT,
             code=ErrorCode.SESSION_EXPIRED,
             message="Session has ended or expired",
+        )
+
+class EventPublishFailedError(AppException):
+    def __init__(self) -> None:
+        super().__init__(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            code=ErrorCode.EVENT_PUBLISH_FAILED,
+            message="Could not publish the event",
         )

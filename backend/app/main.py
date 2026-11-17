@@ -1,7 +1,10 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
+from app.core.kafka_producer import close_kafka_producer, init_kafka_producer
 from app.modules.users.router import router as users_router
 from app.modules.auth.router import router as auth_router
 from app.modules.videos.router import router as videos_router
@@ -13,7 +16,18 @@ from app.modules.events.router import router as events_router
 
 settings = get_settings()
 
-app = FastAPI(title="LoopTok API")
+# lifespan: código que corre una vez al encender y una vez al apagar la app
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # Al encender -> crea el Producer de Kafka -> Se hace aquí para tener uno solo.
+    # Si KAFKA_REQUIRED=true y falta KAFKA_BOOTSTRAP_SERVERS, la app no arranca
+    init_kafka_producer()
+    yield  # aquí la app queda funcionando
+    # Al apagar -> envía los eventos que aún estaban pendientes y cierra el Producer
+    close_kafka_producer()
+
+
+app = FastAPI(title="LoopTok API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
