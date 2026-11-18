@@ -1,5 +1,6 @@
 import redis
 from uuid import UUID
+from app.modules.recommendations.repository import RecommendationsRepository
 import json
 
 class RecommendationService:
@@ -11,17 +12,15 @@ class RecommendationService:
             decode_responses=True # Decodifica de bytes a str
         )
         self.user_id = user_id
-
+        self.recommendation_repository = RecommendationsRepository(client=self.client)
 
     def get_recommendations(self, user_id: UUID) -> list[str]:
 
         # usando el cliente, obtenemos json (por eso get y no hsget) de recomendaciones para un usuario, que recommender almacenó en Valkey
-        recommendations = self.client.get(f"user:{user_id}:recommendations") # obtenemos un str -> hay que convertirlo a json
+        recommendations = self.recommendation_repository.get_recommendations(user_id=user_id)
 
-        # si no hay recomendaciones, se inicializa una
         if recommendations is None:
             return {}
 
         return json.loads(recommendations)
-
-        # TODO: Revisar respuestas de error, si se retorna {} eso lo maneja el front? mandar codigos de error?
+# TODO: revisar que front si maneje lista {}
