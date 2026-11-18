@@ -4,14 +4,15 @@ import styles from './styles/VideoPlayer.module.css';
 
 interface VideoPlayerProps {
     url: string;
+    category: string;
     isActive: boolean;
     title?: string;
 }
 
-export function VideoPlayer({ url, isActive, title = 'YouTube video' }: VideoPlayerProps) {
+export function VideoPlayer({ url, category, isActive, title = 'YouTube video' }: VideoPlayerProps) {
     const videoId = getYouTubeVideoId(url);
     const { containerRef, state, muted, progress, togglePlayback, toggleMute, seek } =
-        useYouTubePlayer(videoId, isActive);
+        useYouTubePlayer(videoId, category, isActive);
 
     return (
         <section className={styles.player} aria-label={title}>

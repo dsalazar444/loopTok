@@ -91,5 +91,5 @@ class RecommenderService:
 
 
 # TODO: Manejar reenvios de mismo event -> en valkey tener event_pocesed con sus ids? -- YA
-# 2. pasar datos desde front
+# 2. pasar datos desde front -- YA
 # configurar compose para valkey -- YA

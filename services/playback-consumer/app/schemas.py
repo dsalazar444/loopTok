@@ -25,6 +25,8 @@ class EventRequest(BaseModel):
     video_id: str = Field(alias="videoId")
     timestamp: datetime
 
+    category: str
+
     watch_time_ms: int = Field(alias="watchTimeMs", ge=0)
     position_seconds: float = Field(alias="positionSeconds", ge=0)
     duration_seconds: float = Field(alias="durationSeconds", ge=0)

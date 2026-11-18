@@ -36,8 +36,7 @@ class EventRequest(BaseModel):
     reason: AbandonReason | None = None
     milestone_percent: float | None = Field(default=None, alias="milestonePercent")
 
-    # TODO: Añadir flujo de categoria -> cambiar valor por defcto, lo puse para que no saliera errores en recommender
-    category: str = ""
+    category: str
 
 
 # Evento tal como se guarda en Kafka -> EventRequest + user_id (lo añade el backend)
