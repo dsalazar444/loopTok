@@ -26,6 +26,8 @@ class PreferencesRepository:
         } 
 
     # funcion para cambiar valor de key sin tener que traer los datos de Valkey al principio
+    # CONSIDERACIÓN: Si el procesamiento falla despues de esta función, no se registrará el event_id como
+    # procesado en processed:events, entonces la afinidad se duplicaría. Limitación identificada
     def update_affinity(self, user_id: UUID, category: str, amount: float ) -> float:
         key = f"user:{user_id}:preferences" # si usuario no existe, lo crea
 
