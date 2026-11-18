@@ -17,24 +17,27 @@ services:
 
   kafka:
     image: apache/kafka:4.1.0
-    hostname: kafka
+    hostname: kafka   #nombre con el que los demas services lo encuntra
     ports:
-      - "127.0.0.1:9092:9092"
+      - "127.0.0.1:9092:9092"  #puerto apra que el backend se conecte a el 
     environment:
       KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: HOST://0.0.0.0:9092,INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      KAFKA_PROCESS_ROLES: broker,controller #que funciones cumple el nodo (ambas)
+      #host -> desde mi pc internal -> desde otros contenedores controller -> comunicacion del controller
+      KAFKA_LISTENERS: HOST://0.0.0.0:9092,INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093  #ppunto de escucha -> donde kafka acepta conexiones
+      # que direcciones les da kafka a lso cleintes para conectarse -> con la ip de mi pc o de la ec2
       KAFKA_ADVERTISED_LISTENERS: HOST://127.0.0.1:9092,INTERNAL://kafka:29092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER  # cual de los lsiteners es para controller de arriba
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      # que protocolo de seguridad ejecuta cada listener
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,HOST:PLAINTEXT,INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL #cual de los listeners para usar los brokers entre si
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1 #numero min de replcias que debn estar sincronizadas
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0 #esperar 0segs antes de rebalancear prticiones cuando lelga un nuevo broker
       KAFKA_NUM_PARTITIONS: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false" # si kafka peude crear automaticamente un topic cuando se cipia uno que no existe
       KAFKA_LOG_DIRS: /var/lib/kafka/data
     volumes:
       - kafka_data:/var/lib/kafka/data
