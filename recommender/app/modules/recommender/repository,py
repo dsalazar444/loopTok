@@ -1,7 +1,0 @@
-import redis
-
-client = redis.Redis(
-    host="valkey",
-    port=6379,
-    decode_responses=True
-)
