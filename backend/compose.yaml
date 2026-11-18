@@ -70,6 +70,39 @@ services:
         condition: service_completed_successfully
     restart: unless-stopped
 
+  # Servicio de un solo uso -> corre las migraciones y termina
+  migrate:
+    profiles: ["app"]
+    build: .
+    image: looptok-backend
+    env_file: .env   # JWT_SECRET_KEY, FRONTEND_ORIGIN, etc. salen de tu .env
+    environment:
+      
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    command: alembic upgrade head
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  backend:
+    profiles: ["app"]
+    build: .
+    image: looptok-backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092   # listener INTERNAL (dentro de la red de compose)
+    ports:
+      - "127.0.0.1:8000:8000"   # se entra desde el pc
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    depends_on:   # espera a que las migraciones terminen y Kafka este sano
+      migrate:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   kafka_data:
