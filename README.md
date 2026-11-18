@@ -3,6 +3,8 @@
 # Qué hace el proyecto
 LoopTok es una app de videos cortos. El frontend captura eventos de reproducción (inicio, progreso, final, abandono) y los envía al backend. El backend los valida y los publica en Kafka mediante un producer. Un consumer lee esos eventos del topic y, más adelante, los entregará a un recomendador (en desarrollo) que usará esa información para sugerir videos.
 
+![Arquitectura de LoopTok](docs.png)
+
 # Carpetas
 ```bash
 loopTok/
