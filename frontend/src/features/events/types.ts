@@ -17,6 +17,8 @@ export interface PlaybackEvent {
   timestamp: string; // Fecha/hora del evento
   // user id es obtenido de JWT por backend
 
+  category: string; // Categoría del video mostrada al usuario
+
   watchTimeMs: number; // Tiempo neto acumulado de reproduccion
   positionSeconds: number; // Posición actual del reproductor
   durationSeconds: number; // Duración total

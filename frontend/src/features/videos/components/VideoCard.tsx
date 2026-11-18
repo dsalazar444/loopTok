@@ -25,6 +25,7 @@ export function VideoCard({
             <div className={styles.media}>
                 <VideoPlayer
                     url={video.url}
+                    category={video.category}
                     isActive={isActive}
                     title={video.title}
                 />

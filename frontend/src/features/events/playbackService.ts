@@ -19,6 +19,7 @@ const SHORT_VIDEO_MILESTONES = [25, 50, 75];
 export class PlaybackTracker {
   private readonly playbackId = crypto.randomUUID(); // permite que backend agrupe todos los eventos de una misma instancia
   private readonly videoId: string;
+  private readonly category: string;
   private readonly onEvent: PlaybackEventHandler;
   // informacion que PlaybackTracker necesita para calcular metricas
   private watchTimeMs = 0; // tiempo neto, porque tendrá en cuenta las n replayed
@@ -35,8 +36,9 @@ export class PlaybackTracker {
   private emittedMilestones = new Set<number>(); // Porcentajes de progreso sin repetir que ya generaron eventos.
   private lastProgressWatchTimeMs = 0; // Tiempo neto acumulado cuando se emitió el último evento de progreso de un video largo.
 
-  constructor(videoId: string, onEvent: PlaybackEventHandler) {
+  constructor(videoId: string, category: string, onEvent: PlaybackEventHandler) {
     this.videoId = videoId;
+    this.category = category;
     this.onEvent = onEvent; //guarda la funcion recibida para usarla posteriormente.
   }
 
@@ -74,6 +76,8 @@ export class PlaybackTracker {
       playbackId: this.playbackId,
       videoId: this.videoId,
       timestamp: new Date().toISOString(), //obtiene la fecha/hora actual y la convierte a String
+
+      category: this.category,
 
       watchTimeMs: Math.round(this.watchTimeMs), //redondear numero al entero más cercano
       positionSeconds: this.positionSeconds,

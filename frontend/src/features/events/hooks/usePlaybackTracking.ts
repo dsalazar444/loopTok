@@ -13,6 +13,7 @@ import type {
 
 export function usePlaybackTracking(
   videoId: string | null,
+  category: string,
   isAuthenticated: boolean
 ) {
   const trackerRef = useRef<PlaybackTracker | null>(null);
@@ -36,13 +37,14 @@ export function usePlaybackTracking(
       if (!trackerRef.current) {
         trackerRef.current = new PlaybackTracker(
           videoId,
+          category,
           handleEvent //indica qué función recibirá los eventos generados
         );
       }
 
       trackerRef.current.start(sample); // iniciar la reproducción / iniciar el seguimiento y generar el evento video_started cuando corresponde.
     },
-    [videoId, isAuthenticated, handleEvent]
+    [videoId, category, isAuthenticated, handleEvent]
   );
 
   // Update playback metrics periodically.

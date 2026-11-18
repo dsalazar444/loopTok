@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "../../auth/context/AuthContext";
@@ -107,12 +106,14 @@ function getPlaybackSample(
 
 export function useYouTubePlayer(
   videoId: string | null,
+  category: string,
   isActive: boolean
 ) {
   const { isAuthenticated } = useAuth();
 
   const tracking = usePlaybackTracking(
     videoId,
+    category,
     isAuthenticated
   );
 
