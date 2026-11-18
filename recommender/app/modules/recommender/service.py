@@ -9,16 +9,16 @@ from app.modules.recommender.repository.processed_events import ProcessedEventsR
 class RecommenderService:
     def __init__(self, event: KafkaEvent):   
         
-        client = redis.Redis(
+        self.client = redis.Redis(
             host="valkey", # redis permite conectarnos con Valkey. Aqui va el host_name, en esta caso, va el nombre del servicio en el compose
             port=6379, # puerto en el que corre Valkey
             decode_responses=True # Decodifica de bytes a str
         )
 
         self.event = event
-        self.recommendation_repository = RecommendationsRepository(client=client)
-        self.preferences_repository = PreferencesRepository(client=client)
-        self.processed_events_repository = ProcessedEventsRepository(client=client)
+        self.recommendation_repository = RecommendationsRepository(client=self.client)
+        self.preferences_repository = PreferencesRepository(client=self.client)
+        self.processed_events_repository = ProcessedEventsRepository(client=self.client)
 
 
     def generate_recommendation(self):
