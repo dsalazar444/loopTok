@@ -1,10 +1,10 @@
 import json, logging
 from confluent_kafka import Consumer, KafkaException
-from app.core.kafka_producer import get_kafka_settings
-from app.modules.events.schemas import KafkaEvent
+from app.config import settings
+from app.schemas import KafkaEvent
 
+logging.basicConfig(level=logging.INFO)  # sin esto, los logger.info no se muestran
 logger = logging.getLogger(__name__)
-settings = get_kafka_settings()
 
 
 def on_client_error(error):
@@ -70,7 +70,7 @@ try:
                 commit_offset()   # descartamos  el mensaje invalido
                 continue  # se salta este mensaje y sigue con el siguiente
 
-            print(evento_recibido.event_id)
+            logger.info("Evento recibido: %s", evento_recibido.event_id)
             msg_process(evento_recibido)   #funcion donde llevamos el evento ya validado para procesarlo u otras cosas
             commit_offset() # offsets -> la posición de un mensaje dentro de una partición al el consumer confirmar  un offset -> le comunica a Kafka hasta que posicion ha avanzado
 finally:

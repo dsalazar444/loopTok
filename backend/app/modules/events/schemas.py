@@ -36,8 +36,3 @@ class EventRequest(BaseModel):
 
     reason: AbandonReason | None = None
     milestone_percent: float | None = Field(default=None,alias="milestonePercent")
-
-
-# Evento igual como se guarda en Kafka -> EventRequest + user_id
-class KafkaEvent(EventRequest):
-    user_id: UUID = Field(alias="userId")
