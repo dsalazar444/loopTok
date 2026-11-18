@@ -36,4 +36,3 @@ class EventRequest(BaseModel):
 
     reason: AbandonReason | None = None
     milestone_percent: float | None = Field(default=None,alias="milestonePercent")
-    

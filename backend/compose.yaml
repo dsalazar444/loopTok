@@ -45,6 +45,31 @@ services:
       retries: 10
       start_period: 20s
 
+  # Servicio que solo se sua una vez -> crea el topic cuando Kafka este healthy y termina.
+  kafka-init:
+    image: apache/kafka:4.1.0
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: >  #comando para crear un topic antes de arrancar el consumer 
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092
+      --create --if-not-exists --topic looptok.playback-events 
+      --partitions 1 --replication-factor 1
+    restart: "no"
+
+  playback-consumer:
+    build:
+      context: ../services/playback-consumer   # indicarle a docker donde estan los archivos para construir la imagen del consumer 
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_PLAYBACK_TOPIC: looptok.playback-events
+    depends_on:  # el consumer espera a que Kafka este sano y a que el topic ya este creado
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   kafka_data:
